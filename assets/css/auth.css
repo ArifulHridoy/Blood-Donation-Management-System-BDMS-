@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+    --ink: #181A1B;
+    --crimson: #A8201A;
+    --crimson-deep: #7A1712;
+    --paper: #F7F4EF;
+    --card: #FFFFFF;
+    --rose: #F3DEDB;
+    --teal: #2E7D6B;
+    --teal-tint: #DCEEE8;
+    --amber: #C97A1E;
+    --amber-tint: #F6E6CF;
+    --line: #E6E0D6;
+    --muted: #7A756C;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(24,26,27,0.04), 0 8px 24px -12px rgba(24,26,27,0.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 40px 20px;
+}
+
+/* ---------- Typography ---------- */
+h1, h2, h3, .display-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+}
+
+.mono {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ---------- Background Watermarks ---------- */
+.bg-drops {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+.bg-drops svg {
+    position: absolute;
+}
+
+/* ---------- Auth Layout ---------- */
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+    position: relative;
+    z-index: 10;
+}
+
+.auth-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 34px 28px;
+    box-shadow: var(--shadow);
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+.auth-logo svg {
+    width: 32px;
+    height: 32px;
+}
+.auth-logo .brand-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 26px;
+}
+.auth-header h1 {
+    font-size: 24px;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+.auth-header p {
+    color: var(--muted);
+    font-size: 13.5px;
+    margin: 0;
+}
+
+/* ---------- Forms & Inputs ---------- */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="phone"],
+input[type="password"],
+input[type="date"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    background: #FCFBF9;
+    color: var(--ink);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--crimson);
+    box-shadow: 0 0 0 3px rgba(168, 32, 26, 0.1);
+}
+
+/* ---------- Button ---------- */
+.btn-primary {
+    display: block;
+    width: 100%;
+    background: var(--ink);
+    color: #FFFFFF;
+    border: none;
+    padding: 12px;
+    border-radius: 9px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 24px;
+}
+.btn-primary:hover {
+    opacity: 0.92;
+}
+.btn-primary:active {
+    transform: scale(0.99);
+}
+
+/* ---------- Message Banners ---------- */
+.alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.alert-error {
+    background: var(--rose);
+    color: var(--crimson-deep);
+    border: 1px solid rgba(168, 32, 26, 0.12);
+}
+
+.alert-success {
+    background: var(--teal-tint);
+    color: var(--teal);
+    border: 1px solid rgba(46, 125, 107, 0.12);
+}
+
+.alert-banner svg {
+    width: 16px;
+    height: 16px;
+    flex: none;
+}
+
+/* ---------- Footer / Navigation ---------- */
+.auth-footer {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--muted);
+}
+.auth-footer a {
+    color: var(--crimson);
+    text-decoration: none;
+    font-weight: 600;
+}
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Dynamic Fields ---------- */
+#donor-fields {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease-out, opacity 0.3s ease-out, margin-top 0.3s;
+    margin-top: 0;
+}
+#donor-fields.visible {
+    max-height: 800px;
+    opacity: 1;
+    margin-top: 16px;
+    border-top: 1px dashed var(--line);
+    padding-top: 18px;
+}
+
+/* ---------- Developer Debug Banner ---------- */
+.debug-banner {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    max-width: 600px;
+    background: var(--amber-tint);
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(201, 122, 30, 0.15);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.debug-banner strong {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.debug-banner a {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: underline;
+}
+.debug-banner a:hover {
+    color: var(--crimson);
+}
