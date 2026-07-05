@@ -254,6 +254,8 @@ try {
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Role</th>
+                        <th>Blood Grp</th>
+                        <th>Eligible</th>
                         <th>Verified</th>
                         <th>Status</th>
                     </tr>
@@ -273,6 +275,29 @@ try {
                                     <span class="role-chip role-<?php echo h($u['role']); ?>">
                                         <?php echo ucfirst(h($u['role'])); ?>
                                     </span>
+                                </td>
+                                <td>
+                                    <?php if ($u['role'] === 'donor' && !empty($u['blood_type'])): ?>
+                                        <span style="font-weight: 600; color: var(--crimson);"><?php echo h($u['blood_type']); ?></span>
+                                    <?php else: ?>
+                                        <span style="color: var(--muted);">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php 
+                                    if ($u['role'] === 'donor') {
+                                        $last_don = $u['last_donation_date'] ?? null;
+                                        if ($last_don) {
+                                            $next_date = date('Y-m-d', strtotime($last_don . ' + 90 days'));
+                                            $today = date('Y-m-d');
+                                            echo ($today >= $next_date) ? '<span style="color: #15803d; font-weight: 600;">Yes</span>' : '<span style="color: var(--crimson); font-weight: 600;">No</span>';
+                                        } else {
+                                            echo '<span style="color: #15803d; font-weight: 600;">Yes</span>';
+                                        }
+                                    } else {
+                                        echo '<span style="color: var(--muted);">-</span>';
+                                    }
+                                    ?>
                                 </td>
                                 <td><?php echo $u['is_verified'] ? 'Yes' : 'No'; ?></td>
                                 <td>
