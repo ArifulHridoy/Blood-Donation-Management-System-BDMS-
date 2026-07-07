@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `gender` ENUM('male', 'female', 'other') NULL,
   `address` VARCHAR(255) NULL,
   `city` VARCHAR(100) NULL,
+  `last_donation_date` DATE NULL,
   `is_verified` TINYINT(1) DEFAULT 0,
   `status` ENUM('active', 'suspended') DEFAULT 'active',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

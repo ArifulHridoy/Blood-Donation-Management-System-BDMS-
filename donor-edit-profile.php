@@ -23,6 +23,8 @@ try {
         $gender = trim($_POST['gender'] ?? '');
         $city = trim($_POST['city'] ?? '');
         $address = trim($_POST['address'] ?? '');
+        $last_donation_date = trim($_POST['last_donation_date'] ?? '');
+        $last_donation_date = !empty($last_donation_date) ? $last_donation_date : null;
 
         // Basic Validation
         if (empty($full_name) || empty($phone) || empty($blood_type) || empty($date_of_birth) || empty($weight_kg) || empty($gender) || empty($city)) {
@@ -39,7 +41,8 @@ try {
                     UPDATE users 
                     SET full_name = :full_name, phone = :phone, blood_type = :blood_type, 
                         date_of_birth = :date_of_birth, weight_kg = :weight_kg, 
-                        gender = :gender, city = :city, address = :address
+                        gender = :gender, city = :city, address = :address,
+                        last_donation_date = :last_donation_date
                     WHERE id = :id
                 ");
                 $updateStmt->execute([
@@ -51,6 +54,7 @@ try {
                     'gender' => $gender,
                     'city' => $city,
                     'address' => $address,
+                    'last_donation_date' => $last_donation_date,
                     'id' => $_SESSION['user_id']
                 ]);
                 $success = "Profile updated successfully.";
@@ -363,9 +367,15 @@ try {
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>City</label>
-                <input type="text" name="city" class="form-control" value="<?php echo htmlspecialchars($user['city']); ?>" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" name="city" class="form-control" value="<?php echo htmlspecialchars($user['city']); ?>" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Donation Date</label>
+                    <input type="date" name="last_donation_date" class="form-control" value="<?php echo htmlspecialchars($user['last_donation_date'] ?? ''); ?>">
+                </div>
             </div>
             
             <div class="form-group">
