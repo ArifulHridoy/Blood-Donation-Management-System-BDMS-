@@ -176,7 +176,10 @@ try {
         </tr>
     </table>
     
-    <a href="logout.php" class="logout-btn">Log Out</a>
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+        <a href="donor-search.php" class="logout-btn" style="background: var(--crimson); text-decoration: none;">Search Donors</a>
+        <a href="logout.php" class="logout-btn">Log Out</a>
+    </div>
 </div>
 
 </body>
