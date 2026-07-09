@@ -38,7 +38,11 @@ $donors = [];
 $error = null;
 
 try {
-    $sql = "SELECT id, full_name, email, phone, blood_type, date_of_birth, weight_kg, gender, address, city, is_verified, status FROM users WHERE role = 'donor'";
+    $sql = "SELECT id, full_name, email, phone, blood_type, date_of_birth, weight_kg, gender, address, city, last_donation_date, is_verified, status,
+                   DATEDIFF(CURDATE(), last_donation_date) AS days_since_last_donation,
+                   DATE_ADD(last_donation_date, INTERVAL 56 DAY) AS next_eligible_date
+            FROM users 
+            WHERE role = 'donor'";
     $where_clauses = [];
     $params = [];
     
@@ -310,46 +314,121 @@ function calculate_age($dob_string) {
         }
         .btn-reset svg { width: 14px; height: 14px; }
         
-        /* ---------- Results Table ---------- */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        /* ---------- Results Cards Grid ---------- */
+        .donor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            padding: 20px;
         }
-        th {
-            text-align: left;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10.5px;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            color: var(--muted);
-            font-weight: 500;
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--line);
-            background: #FAF8F5;
-        }
-        td {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--line);
-            font-size: 13.5px;
-            vertical-align: middle;
-        }
-        tr:last-child td { border-bottom: none; }
         
-        /* Table Chips */
-        .type-chip {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 600;
+        .donor-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(24,26,27,0.02);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+        }
+        
+        .donor-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(24,26,27,0.08);
+            border-color: var(--muted);
+        }
+        
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+        
+        .name-sec {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .name-sec .name {
+            font-family: 'Fraunces', serif;
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--ink);
+            line-height: 1.25;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .name-sec .name svg {
+            width: 10px;
+            height: 10px;
+            fill: var(--crimson);
+            flex-shrink: 0;
+        }
+        
+        .name-sec .age-gender {
             font-size: 12.5px;
-            padding: 3px 8px;
-            border-radius: 6px;
+            color: var(--muted);
+        }
+        
+        .blood-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
             background: var(--rose);
             color: var(--crimson-deep);
-            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(168, 32, 26, 0.12);
+            flex-shrink: 0;
+        }
+        
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--ink);
+        }
+        
+        .detail-item svg {
+            width: 14px;
+            height: 14px;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+        
+        .detail-item span {
+            font-weight: 500;
+        }
+        
+        .detail-item em {
+            font-style: normal;
+            color: var(--muted);
+            font-size: 12px;
         }
         
         .badge {
             font-family: 'Inter', sans-serif;
-            font-size: 11.5px;
+            font-size: 10.5px;
             font-weight: 600;
             padding: 2px 7px;
             border-radius: 20px;
@@ -360,37 +439,57 @@ function calculate_age($dob_string) {
         .badge-active { background: var(--teal-tint); color: var(--teal); }
         .badge-suspended { background: var(--rose); color: var(--crimson-deep); }
         
-        /* Contact info styling */
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .contact-info span { font-size: 13px; color: var(--ink); font-weight: 500; }
-        .contact-info em { font-size: 11.5px; color: var(--muted); font-style: normal; font-family: 'JetBrains Mono', monospace; }
-        
-        /* Donor Meta Details */
-        .donor-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .donor-meta .name {
+        .eligibility-tag {
+            font-size: 11.5px;
             font-weight: 600;
-            color: var(--ink);
-            display: flex;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
+            margin-top: 2px;
         }
-        .donor-meta .name svg {
-            width: 10px;
-            height: 10px;
-            fill: var(--crimson);
-            display: inline;
+        .eligibility-available {
+            background: var(--teal-tint);
+            color: var(--teal);
         }
-        .donor-meta .age-gender {
-            font-size: 12px;
-            color: var(--muted);
+        .eligibility-waiting {
+            background: var(--amber-tint);
+            color: var(--amber);
+        }
+        
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: auto;
+            border-top: 1px solid var(--line);
+            padding-top: 14px;
+        }
+        
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+        .btn-call {
+            background: var(--ink);
+            color: #fff;
+        }
+        .btn-email {
+            background: var(--paper);
+            color: var(--ink);
+            border: 1px solid var(--line);
         }
         
         /* ---------- Empty / Error States ---------- */
@@ -574,7 +673,7 @@ function calculate_age($dob_string) {
                 <span class="results-count"><?php echo count($donors); ?> matching donors</span>
             </div>
             
-            <div style="overflow-x: auto;">
+            <div>
                 <?php if (empty($donors)): ?>
                     <div class="empty-state">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -585,64 +684,117 @@ function calculate_age($dob_string) {
                         <p>Try modifying your keyword search or adjusting your dropdown filter criteria.</p>
                     </div>
                 <?php else: ?>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Donor Profile</th>
-                                <th>Blood Type</th>
-                                <th>Contact Information</th>
-                                <th>Location</th>
-                                <th>Verification</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($donors as $d): ?>
-                                <tr>
-                                    <td>
-                                        <div class="donor-meta">
-                                            <div class="name">
-                                                <!-- If donor has O-, add a crimson blood drop to highlight rare type -->
-                                                <?php if ($d['blood_type'] === 'O-' || $d['blood_type'] === 'AB-'): ?>
-                                                    <svg viewBox="0 0 32 32" title="Rare Type Emergency Drop">
-                                                        <path d="M16 4C16 4 6 14.5 6 20.5C6 26.3 10.5 29 16 29C21.5 29 26 26.3 26 20.5C26 14.5 16 4 16 4Z"/>
-                                                    </svg>
-                                                <?php endif; ?>
-                                                <?php echo h($d['full_name']); ?>
-                                            </div>
-                                            <div class="age-gender">
-                                                Age: <?php echo calculate_age($d['date_of_birth']); ?> · <?php echo ucfirst(h($d['gender'])); ?>
-                                            </div>
+                    <div class="donor-grid">
+                        <?php foreach ($donors as $d): ?>
+                            <?php
+                            $is_active = ($d['status'] === 'active');
+                            $is_verified = ((int)$d['is_verified'] === 1);
+                            $days_since = $d['days_since_last_donation'] !== null ? (int)$d['days_since_last_donation'] : null;
+                            $has_no_recent_donation = ($days_since === null || $days_since >= 56);
+                            $is_available = ($is_active && $is_verified && $has_no_recent_donation);
+                            ?>
+                            <div class="donor-card">
+                                <!-- Card Header (Top section) -->
+                                <div class="card-top">
+                                    <div class="name-sec">
+                                        <h3 class="name">
+                                            <?php if ($d['blood_type'] === 'O-' || $d['blood_type'] === 'AB-'): ?>
+                                                <svg viewBox="0 0 32 32" title="Rare Type Emergency Drop">
+                                                    <path d="M16 4C16 4 6 14.5 6 20.5C6 26.3 10.5 29 16 29C21.5 29 26 26.3 26 20.5C26 14.5 16 4 16 4Z"/>
+                                                </svg>
+                                            <?php endif; ?>
+                                            <?php echo h($d['full_name']); ?>
+                                        </h3>
+                                        <div class="age-gender">
+                                            Age: <?php echo calculate_age($d['date_of_birth']); ?> · <?php echo ucfirst(h($d['gender'])); ?>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="type-chip"><?php echo h($d['blood_type']); ?></span>
-                                    </td>
-                                    <td>
-                                        <div class="contact-info">
-                                            <span><?php echo h($d['phone']); ?></span>
-                                            <em><?php echo h($d['email']); ?></em>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <strong style="color: var(--ink);"><?php echo h($d['city']); ?></strong>
-                                    </td>
-                                    <td>
-                                        <?php if ($d['is_verified']): ?>
-                                            <span class="badge badge-verified">Verified</span>
+                                    </div>
+                                    <div class="blood-badge">
+                                        <?php echo h($d['blood_type']); ?>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card Details (Body section) -->
+                                <div class="card-details">
+                                    <!-- Location details -->
+                                    <div class="detail-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                        <span><?php echo h($d['city']); ?><em style="font-weight: normal; margin-left: 5px;">(<?php echo h($d['address']); ?>)</em></span>
+                                    </div>
+                                    
+                                    <!-- Last donation details -->
+                                    <div class="detail-item">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                        </svg>
+                                        <?php if ($days_since === null): ?>
+                                            <span>Never Donated</span>
+                                        <?php else: ?>
+                                            <span>Last Donated: <em style="font-weight: 500; color: var(--ink);"><?php echo $days_since; ?> days ago</em></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    
+                                    <!-- Status / Verification / Availability Badges -->
+                                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; align-items: center;">
+                                        <!-- Verification badge -->
+                                        <?php if ($is_verified): ?>
+                                            <span class="badge badge-verified">✓ Verified</span>
                                         <?php else: ?>
                                             <span class="badge badge-unverified">Unverified</span>
                                         <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-<?php echo h($d['status']); ?>">
-                                            <?php echo ucfirst(h($d['status'])); ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                                        
+                                        <!-- Account Status badge -->
+                                        <?php if (!$is_active): ?>
+                                            <span class="badge badge-suspended">Suspended</span>
+                                        <?php endif; ?>
+                                        
+                                        <!-- Availability status tag -->
+                                        <?php if ($is_available): ?>
+                                            <span class="eligibility-tag eligibility-available">
+                                                <svg style="width: 8px; height: 8px; fill: currentColor;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                                Available
+                                            </span>
+                                        <?php else: ?>
+                                            <?php if ($is_active && $is_verified && $days_since !== null): ?>
+                                                <span class="eligibility-tag eligibility-waiting">
+                                                    <svg style="width: 8px; height: 8px; fill: currentColor;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                                    Wait <?php echo (56 - $days_since); ?>d
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="eligibility-tag eligibility-waiting" style="background: var(--rose); color: var(--crimson-deep);">
+                                                    <svg style="width: 8px; height: 8px; fill: currentColor;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                                    Unavailable
+                                                </span>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card Footer Actions (Contact Buttons) -->
+                                <div class="card-actions">
+                                    <a href="tel:<?php echo h($d['phone']); ?>" class="action-btn btn-call" title="Call Donor">
+                                        <svg style="width:13px; height:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                        </svg>
+                                        Call
+                                    </a>
+                                    <a href="mailto:<?php echo h($d['email']); ?>" class="action-btn btn-email" title="Email Donor">
+                                        <svg style="width:13px; height:13px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                            <polyline points="22,6 12,13 2,6"></polyline>
+                                        </svg>
+                                        Email
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
