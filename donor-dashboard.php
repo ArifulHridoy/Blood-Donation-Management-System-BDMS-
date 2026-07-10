@@ -18,7 +18,7 @@ try {
     // Calculate eligibility
     $last_donation = $user['last_donation_date'] ?? null;
     if ($last_donation) {
-        $next_eligible_date = date('Y-m-d', strtotime($last_donation . ' + 90 days'));
+        $next_eligible_date = date('Y-m-d', strtotime($last_donation . ' + 56 days'));
         $today = date('Y-m-d');
         $is_eligible = ($today >= $next_eligible_date);
         $next_eligible_display = date('M d, Y', strtotime($next_eligible_date));
