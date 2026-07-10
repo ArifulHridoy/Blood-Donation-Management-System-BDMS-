@@ -39,6 +39,25 @@ try {
         exit;
     }
 
+    // Check donor eligibility (minimum gap of 56 days)
+    $stmt = $pdo->prepare("SELECT last_donation_date FROM users WHERE id = :id FOR SHARE");
+    $stmt->execute(['id' => $_SESSION['user_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && !empty($user['last_donation_date'])) {
+        $last_donation = new DateTime($user['last_donation_date']);
+        $slot_date = new DateTime($slot['slot_date']);
+        $interval = $last_donation->diff($slot_date);
+        
+        // If slot date is before or equal to last donation date, or the gap is less than 56 days
+        if ($interval->invert == 1 || $interval->days < 56) {
+            $pdo->rollBack();
+            $eligible_date = $last_donation->modify('+56 days')->format('M d, Y');
+            echo json_encode(['success' => false, 'message' => 'You are not eligible to donate on this date. You can donate again on or after ' . $eligible_date . '.']);
+            exit;
+        }
+    }
+
     // Check if already booked by this user
     $stmt = $pdo->prepare("SELECT id FROM donation_bookings WHERE slot_id = :slot_id AND donor_id = :donor_id AND status = 'scheduled'");
     $stmt->execute([
