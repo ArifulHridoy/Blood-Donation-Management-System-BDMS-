@@ -194,7 +194,7 @@ checkRole(['donor']);
 <!-- Booking Modal -->
 <div class="modal-overlay" id="bookingModal">
     <div class="modal">
-        <h2>Confirm Booking</h2>
+        <h2 id="modalTitle">Confirm Booking</h2>
         <p id="modalDesc">Are you sure you want to book this donation slot?</p>
         <div class="modal-actions">
             <button class="btn btn-outline" id="btnCancel">Cancel</button>
@@ -210,8 +210,10 @@ checkRole(['donor']);
         const btnCancel = document.getElementById('btnCancel');
         const btnConfirm = document.getElementById('btnConfirm');
         const modalDesc = document.getElementById('modalDesc');
+        const modalTitle = document.getElementById('modalTitle');
         
         let selectedSlotId = null;
+        let currentAction = 'book'; // 'book' or 'cancel'
 
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
@@ -224,8 +226,16 @@ checkRole(['donor']);
             eventClick: function(info) {
                 const props = info.event.extendedProps;
                 
+                const dateStr = info.event.start.toLocaleString();
+
                 if (props.isBooked) {
-                    alert('You have already booked this slot.');
+                    currentAction = 'cancel';
+                    selectedSlotId = info.event.id;
+                    modalTitle.innerText = 'Cancel Appointment';
+                    modalDesc.innerHTML = `Are you sure you want to cancel your donation appointment on <strong>${dateStr}</strong>?<br><br><small>If you need to reschedule, simply cancel this appointment and select a new available slot.</small>`;
+                    btnConfirm.innerText = 'Cancel Appointment';
+                    btnConfirm.style.backgroundColor = '#64748b'; // Gray-ish for cancel
+                    modal.classList.add('active');
                     return;
                 }
                 if (props.isFull) {
@@ -233,10 +243,13 @@ checkRole(['donor']);
                     return;
                 }
 
-                // Prepare modal
+                // Prepare modal for booking
+                currentAction = 'book';
                 selectedSlotId = info.event.id;
-                const dateStr = info.event.start.toLocaleString();
+                modalTitle.innerText = 'Confirm Booking';
                 modalDesc.innerHTML = `Are you sure you want to book a donation slot on <strong>${dateStr}</strong>?`;
+                btnConfirm.innerText = 'Book Slot';
+                btnConfirm.style.backgroundColor = 'var(--primary)';
                 modal.classList.add('active');
             }
         });
@@ -252,9 +265,11 @@ checkRole(['donor']);
             if (!selectedSlotId) return;
 
             btnConfirm.disabled = true;
-            btnConfirm.innerText = 'Booking...';
+            btnConfirm.innerText = 'Processing...';
 
-            fetch('api/book-slot.php', {
+            const endpoint = currentAction === 'book' ? 'api/book-slot.php' : 'api/cancel-slot.php';
+
+            fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ slot_id: selectedSlotId })
@@ -274,7 +289,6 @@ checkRole(['donor']);
             })
             .finally(() => {
                 btnConfirm.disabled = false;
-                btnConfirm.innerText = 'Book Slot';
                 modal.classList.remove('active');
                 selectedSlotId = null;
             });
