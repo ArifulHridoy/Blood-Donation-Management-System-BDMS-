@@ -292,6 +292,7 @@ try {
     </div>
     <div class="nav-links">
         <a href="donor-dashboard.php" class="active">Dashboard</a>
+        <a href="donor-schedule.php">Schedule Donation</a>
         <a href="donor-edit-profile.php">Edit Profile</a>
         <a href="logout.php" class="btn-logout">Logout</a>
     </div>

@@ -69,3 +69,38 @@ INSERT INTO `users` (`full_name`, `email`, `phone`, `password_hash`, `role`, `bl
 VALUES 
 ('Rahim Ahmed', 'donor@bdms.com', '01733333333', '$2y$10$t8/tRVWoETodCMgwI2HPEO9yMx0BJWKPGS5M1Tc5Q.KDJDNB.gkG2', 'donor', 'O+', '1995-06-15', 72.50, 'male', '12 Boyra Main Road', 'Khulna', 1, 'active')
 ON DUPLICATE KEY UPDATE `email`=`email`;
+
+-- 5. DONATION SLOTS TABLE
+CREATE TABLE IF NOT EXISTS `donation_slots` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `slot_date` DATE NOT NULL,
+  `start_time` TIME NOT NULL,
+  `end_time` TIME NOT NULL,
+  `capacity` INT DEFAULT 5,
+  `booked_count` INT DEFAULT 0,
+  `status` ENUM('available', 'full', 'cancelled') DEFAULT 'available',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `unique_slot` (`slot_date`, `start_time`, `end_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 6. DONATION BOOKINGS TABLE
+CREATE TABLE IF NOT EXISTS `donation_bookings` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `slot_id` INT NOT NULL,
+  `donor_id` INT NOT NULL,
+  `status` ENUM('scheduled', 'completed', 'cancelled', 'no_show') DEFAULT 'scheduled',
+  `booked_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`slot_id`) REFERENCES `donation_slots` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`donor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  UNIQUE KEY `unique_booking` (`slot_id`, `donor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Seed some sample slots for testing (e.g. for July 2026)
+INSERT IGNORE INTO `donation_slots` (`slot_date`, `start_time`, `end_time`, `capacity`, `booked_count`, `status`)
+VALUES 
+('2026-07-15', '09:00:00', '10:00:00', 5, 0, 'available'),
+('2026-07-15', '10:00:00', '11:00:00', 5, 0, 'available'),
+('2026-07-15', '11:00:00', '12:00:00', 5, 0, 'available'),
+('2026-07-16', '14:00:00', '15:00:00', 2, 0, 'available'),
+('2026-07-16', '15:00:00', '16:00:00', 2, 0, 'available'),
+('2026-07-20', '09:00:00', '11:00:00', 10, 0, 'available');
