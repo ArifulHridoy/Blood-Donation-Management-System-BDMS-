@@ -29,6 +29,25 @@ try {
   UNIQUE KEY `unique_booking` (`slot_id`, `donor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `blood_requests` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `requester_id` INT NOT NULL,
+  `blood_group` ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL,
+  `quantity` INT NOT NULL DEFAULT 1,
+  `urgency` ENUM('critical', 'urgent', 'standard') NOT NULL DEFAULT 'standard',
+  `hospital_name` VARCHAR(200) NOT NULL,
+  `ward` VARCHAR(100) NULL,
+  `city` VARCHAR(100) NOT NULL,
+  `contact_person` VARCHAR(100) NOT NULL,
+  `contact_phone` VARCHAR(20) NOT NULL,
+  `contact_email` VARCHAR(150) NULL,
+  `notes` TEXT NULL,
+  `status` ENUM('pending', 'approved', 'fulfilled', 'cancelled') DEFAULT 'pending',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`requester_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
     $pdo->exec("INSERT IGNORE INTO `donation_slots` (`slot_date`, `start_time`, `end_time`, `capacity`, `booked_count`, `status`)
 VALUES 
 ('2026-07-15', '09:00:00', '10:00:00', 5, 0, 'available'),
