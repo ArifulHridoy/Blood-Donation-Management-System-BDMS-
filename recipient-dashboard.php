@@ -860,7 +860,7 @@ $error   = get_flash_message('error');
                         </thead>
                         <tbody>
                             <?php foreach ($recent_requests as $req): ?>
-                            <tr>
+                            <tr style="cursor: pointer;" onclick="window.location='request-status.php?id=<?php echo $req['id']; ?>'">
                                 <td><span class="blood-badge"><?php echo h($req['blood_group']); ?></span></td>
                                 <td><?php echo h($req['quantity']); ?> unit<?php echo $req['quantity'] > 1 ? 's' : ''; ?></td>
                                 <td>

@@ -865,12 +865,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(function (response) { return response.json(); })
         .then(function (data) {
             if (data.success) {
-                showAlert('success', data.message || 'Blood request submitted successfully!');
-                form.reset();
-                // Clear custom radio visual states
-                document.querySelectorAll('.bg-chip input, .urgency-chip input').forEach(function (r) {
-                    r.checked = false;
-                });
+                // Redirect to status tracking view instead of staying on the form
+                window.location.href = 'request-status.php?id=' + data.request_id + '&success=1';
             } else {
                 showAlert('error', data.error || 'Something went wrong. Please try again.');
             }

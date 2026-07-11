@@ -107,6 +107,13 @@ try {
 
     $requestId = $pdo->lastInsertId();
 
+    // Send confirmation notification
+    if (!empty($contact_email)) {
+        $subject = "Blood Request #$requestId Received";
+        $body = "Dear $contact_person,\n\nWe have received your $urgency blood request for $quantity units of $blood_group blood at $hospital_name.\n\nTrack your request status here: http://localhost/Blood-Donation-Management-System-BDMS--main/request-status.php?id=$requestId\n\nThank you,\nBDMS Team";
+        log_simulated_email($contact_email, $subject, $body);
+    }
+
     echo json_encode([
         'success' => true,
         'message' => "Blood request #$requestId submitted successfully! We'll match you with available donors.",
