@@ -922,6 +922,21 @@ $error   = get_flash_message('error');
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </span>
                     </a>
+                    <a href="donor-search.php" class="action-tile" id="action-search-donors">
+                        <div class="action-icon ink">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                        <div class="action-text">
+                            <div class="title">Search Donors</div>
+                            <div class="desc">Find matching blood donors</div>
+                        </div>
+                        <span class="action-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </span>
+                    </a>
                     <a href="logout.php" class="action-tile" id="action-logout">
                         <div class="action-icon teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

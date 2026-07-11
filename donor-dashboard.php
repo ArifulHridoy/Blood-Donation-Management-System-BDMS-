@@ -317,7 +317,7 @@ try {
                 <li>
                     <span class="label">Blood Type</span>
                     <span class="value"><span class="blood-badge"><?php echo htmlspecialchars($user['blood_type']); ?></span></span>
-                </li>
+                </div>
                 <li>
                     <span class="label">Email</span>
                     <span class="value"><?php echo htmlspecialchars($user['email']); ?></span>
@@ -325,6 +325,10 @@ try {
                 <li>
                     <span class="label">Phone</span>
                     <span class="value"><?php echo htmlspecialchars($user['phone']); ?></span>
+                </li>
+                <li>
+                    <span class="label">Gender</span>
+                    <span class="value"><?php echo ucfirst(htmlspecialchars($user['gender'])); ?></span>
                 </li>
                 <li>
                     <span class="label">Date of Birth</span>
@@ -337,6 +341,10 @@ try {
                 <li>
                     <span class="label">City</span>
                     <span class="value"><?php echo htmlspecialchars($user['city']); ?></span>
+                </li>
+                <li>
+                    <span class="label">Address</span>
+                    <span class="value"><?php echo htmlspecialchars($user['address'] ?? 'Not provided'); ?></span>
                 </li>
                 <li>
                     <span class="label">Status</span>
