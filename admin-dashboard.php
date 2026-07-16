@@ -9,6 +9,9 @@ require_once __DIR__ . '/config/db.php';
 // Guard role
 checkRole(['admin']);
 
+$success_msg = get_flash_message('success');
+$error_msg = get_flash_message('error');
+
 try {
     // 1. Fetch latest admin details from DB
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id LIMIT 1");
@@ -324,6 +327,17 @@ try {
         </div>
     </div>
     
+    <?php if ($success_msg): ?>
+        <div style="background: var(--teal-tint); color: var(--teal); border: 1px solid var(--teal); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; font-size: 14px;">
+            ✓ <?php echo h($success_msg); ?>
+        </div>
+    <?php endif; ?>
+    <?php if ($error_msg): ?>
+        <div style="background: var(--rose); color: var(--crimson-deep); border: 1px solid var(--crimson); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; font-size: 14px;">
+            ⚠ <?php echo h($error_msg); ?>
+        </div>
+    <?php endif; ?>
+    
     <!-- Stats Grid -->
     <div class="stats-grid">
         <div class="stat-card stat-donors">
@@ -365,12 +379,13 @@ try {
                                 <th>Urgency</th>
                                 <th>Status</th>
                                 <th>Date Requested</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($recent_requests)): ?>
                                 <tr>
-                                    <td colspan="6" style="text-align: center; color: var(--muted); padding: 24px;">No blood requests registered in the system.</td>
+                                    <td colspan="7" style="text-align: center; color: var(--muted); padding: 24px;">No blood requests registered in the system.</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($recent_requests as $req): ?>
@@ -390,6 +405,28 @@ try {
                                         </td>
                                         <td style="font-size:12px; color:var(--muted);">
                                             <?php echo date('d M Y', strtotime($req['created_at'])); ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($req['status'] === 'pending'): ?>
+                                                <div style="display: flex; gap: 6px; align-items: center;">
+                                                    <form action="api/update-blood-request.php" method="POST" style="margin:0;">
+                                                        <?php echo csrf_input(); ?>
+                                                        <input type="hidden" name="request_id" value="<?php echo $req['id']; ?>">
+                                                        <input type="hidden" name="status" value="approved">
+                                                        <input type="hidden" name="redirect" value="../admin-dashboard.php">
+                                                        <button type="submit" class="logout-link" style="padding: 4px 8px; font-size: 11px; background:var(--teal); border-radius:4px; font-weight:600; cursor:pointer;">Approve</button>
+                                                    </form>
+                                                    <form action="api/update-blood-request.php" method="POST" style="margin:0;">
+                                                        <?php echo csrf_input(); ?>
+                                                        <input type="hidden" name="request_id" value="<?php echo $req['id']; ?>">
+                                                        <input type="hidden" name="status" value="cancelled">
+                                                        <input type="hidden" name="redirect" value="../admin-dashboard.php">
+                                                        <button type="submit" class="logout-link" style="padding: 4px 8px; font-size: 11px; background:transparent; color:var(--crimson); border:1px solid var(--crimson); border-radius:4px; font-weight:600; cursor:pointer;">Reject</button>
+                                                    </form>
+                                                </div>
+                                            <?php else: ?>
+                                                <span style="color:var(--muted); font-size:12.5px;">-</span>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
