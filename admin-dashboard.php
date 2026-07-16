@@ -66,20 +66,20 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ink: #181A1B;
-            --crimson: #A8201A;
-            --crimson-deep: #7A1712;
-            --paper: #F7F4EF;
+            --ink: #1E293B;            /* Slate 800 */
+            --crimson: #D32F2F;        /* Medical Red */
+            --crimson-deep: #B71C1C;   /* Dark Red */
+            --paper: #F8FAFC;          /* Slate 50 */
             --card: #FFFFFF;
-            --rose: #F3DEDB;
-            --teal: #2E7D6B;
-            --teal-tint: #DCEEE8;
-            --amber: #C97A1E;
-            --amber-tint: #F6E6CF;
-            --line: #E6E0D6;
-            --muted: #7A756C;
-            --radius: 14px;
-            --shadow: 0 1px 2px rgba(24,26,27,0.04), 0 8px 24px -12px rgba(24,26,27,0.12);
+            --rose: #FEE2E2;           /* Red 100 */
+            --teal: #2E7D32;           /* Success Green */
+            --teal-tint: #E8F5E9;      /* Green 50 */
+            --amber: #F57C00;          /* Warning Orange */
+            --amber-tint: #FFF3E0;     /* Warning 50 */
+            --line: #E2E8F0;           /* Slate 200 */
+            --muted: #64748B;          /* Slate 500 */
+            --radius: 12px;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px -12px rgba(0, 0, 0, 0.08);
         }
         * { box-sizing: border-box; }
         body {
@@ -518,7 +518,6 @@ try {
             <div class="section-card">
                 <div class="section-header">
                     <h2>Console Actions</h2>
-                </div>
                 <div class="quick-links">
                     <a href="donor-search.php" class="quick-link-btn">
                         <svg viewBox="0 0 24 24">
@@ -526,6 +525,15 @@ try {
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                         Search Blood Donors
+                    </a>
+                    <a href="admin-users.php" class="quick-link-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Manage User Accounts
                     </a>
                 </div>
             </div>

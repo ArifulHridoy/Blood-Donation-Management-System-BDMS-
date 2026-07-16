@@ -24,17 +24,17 @@ checkRole(['donor']);
 
     <style>
         :root {
-            --bg-color: #f1f5f9;
-            --nav-bg: #ffffff;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --primary: #dc2626; /* Crimson red */
-            --primary-hover: #b91c1c;
-            --border: #e2e8f0;
-            --radius: 16px;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --bg-color: #F8FAFC;       /* Slate 50 */
+            --nav-bg: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;      /* Slate 800 */
+            --text-muted: #64748B;     /* Slate 500 */
+            --primary: #D32F2F;        /* Medical Red */
+            --primary-hover: #B71C1C;
+            --border: #E2E8F0;         /* Slate 200 */
+            --radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
         }
         * { box-sizing: border-box; }
         body {
