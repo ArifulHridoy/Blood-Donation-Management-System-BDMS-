@@ -45,14 +45,14 @@ function checkRole(array $allowed_roles) {
             <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
             <style>
                 :root {
-                    --ink: #181A1B;
-                    --paper: #F7F4EF;
+                    --ink: #1E293B;            /* Slate 800 */
+                    --paper: #F8FAFC;          /* Slate 50 */
                     --card: #FFFFFF;
-                    --line: #E6E0D6;
-                    --crimson: #A8201A;
-                    --muted: #7A756C;
-                    --rose: #F3DEDB;
-                    --crimson-deep: #7A1712;
+                    --line: #E2E8F0;           /* Slate 200 */
+                    --crimson: #D32F2F;        /* Medical Red */
+                    --muted: #64748B;          /* Slate 500 */
+                    --rose: #FEE2E2;           /* Red 100 */
+                    --crimson-deep: #B71C1C;   /* Dark Red */
                 }
                 body {
                     background: var(--paper);

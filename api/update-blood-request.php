@@ -44,7 +44,12 @@ if (!in_array($new_status, $valid_statuses)) {
 
 try {
     // Check if request exists and if the user has permission to modify it
-    $stmt = $pdo->prepare("SELECT * FROM blood_requests WHERE id = :id LIMIT 1");
+    $stmt = $pdo->prepare("
+        SELECT r.*, u.email AS user_email, u.full_name AS user_name 
+        FROM blood_requests r
+        JOIN users u ON r.requester_id = u.id
+        WHERE r.id = :id LIMIT 1
+    ");
     $stmt->execute(['id' => $request_id]);
     $request = $stmt->fetch();
 
@@ -78,16 +83,18 @@ try {
         'status' => $new_status,
         'id' => $request_id
     ]);
-
-    // Send notification to the requester
+  
+      // Send notification to the requester
     $title = "Blood Request #{$request_id} Updated";
     $msg = "Your blood request has been marked as '{$new_status}'.";
     $link = "request-status.php?id={$request_id}";
     add_notification($request['requester_id'], $title, $msg, 'info', $link);
 
+    $message = "Request #{$request_id} has been marked as {$new_status}.";
+
     echo json_encode([
         'success' => true,
-        'message' => "Request #{$request_id} has been marked as {$new_status}.",
+        'message' => $message,
         'new_status' => $new_status
     ]);
 

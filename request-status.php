@@ -48,24 +48,24 @@ $color = $status_colors[$req['status']] ?? 'gray';
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ink: #181A1B;
-            --paper: #F7F4EF;
+            --ink: #1E293B;            /* Slate 800 */
+            --paper: #F8FAFC;          /* Slate 50 */
             --card: #FFFFFF;
-            --line: #E6E0D6;
-            --muted: #7A756C;
-            --radius: 14px;
-            --shadow: 0 1px 2px rgba(24,26,27,0.04), 0 8px 24px -12px rgba(24,26,27,0.12);
-            --crimson: #A8201A;
-            --crimson-deep: #7A1712;
+            --line: #E2E8F0;           /* Slate 200 */
+            --muted: #64748B;          /* Slate 500 */
+            --radius: 12px;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px -12px rgba(0, 0, 0, 0.08);
+            --crimson: #D32F2F;        /* Medical Red */
+            --crimson-deep: #B71C1C;   /* Dark Red */
             
-            --teal: #2E7D6B;
-            --teal-tint: #DCEEE8;
-            --amber: #C97A1E;
-            --amber-tint: #F6E6CF;
-            --blue: #2563eb;
-            --blue-tint: #dbeafe;
-            --gray: #64748b;
-            --gray-tint: #f1f5f9;
+            --teal: #2E7D32;           /* Success Green */
+            --teal-tint: #E8F5E9;      /* Green 50 */
+            --amber: #F57C00;          /* Warning Orange */
+            --amber-tint: #FFF3E0;     /* Warning 50 */
+            --blue: #1976D2;           /* Healthcare Blue */
+            --blue-tint: #E3F2FD;      /* Blue 50 */
+            --gray: #64748B;
+            --gray-tint: #F1F5F9;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
