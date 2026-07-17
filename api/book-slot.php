@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/notification_service.php';
 
 header('Content-Type: application/json');
 
@@ -89,6 +90,21 @@ try {
     ]);
 
     $pdo->commit();
+
+    // Trigger in-app notifications
+    // 1. Notify the donor
+    $title = "Donation Appointment Booked";
+    $msg = "You successfully booked a donation slot on " . date('M d, Y', strtotime($slot['slot_date'])) . " at " . date('h:i A', strtotime($slot['start_time'])) . ".";
+    add_notification($_SESSION['user_id'], $title, $msg, 'success', 'donor-dashboard.php');
+
+    // 2. Notify all active admins
+    $adminStmt = $pdo->query("SELECT id FROM users WHERE role = 'admin' AND status = 'active'");
+    $admins = $adminStmt->fetchAll(PDO::FETCH_COLUMN);
+    foreach ($admins as $adminId) {
+        $donorName = $_SESSION['user_name'] ?? 'A donor';
+        add_notification($adminId, "New Booking Alert", "{$donorName} booked a slot for " . date('M d, Y', strtotime($slot['slot_date'])) . ".", 'info', 'admin-dashboard.php');
+    }
+
     echo json_encode(['success' => true, 'message' => 'Slot booked successfully.']);
 
 } catch (Exception $e) {

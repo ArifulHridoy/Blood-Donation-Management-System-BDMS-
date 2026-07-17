@@ -564,7 +564,8 @@ function calculate_age($dob_string) {
                 Searching across the network database
             </div>
         </div>
-        <div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <?php include_once __DIR__ . '/includes/notification_bell.php'; ?>
             <a href="<?php echo h($dashboard_link); ?>" class="back-link">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
