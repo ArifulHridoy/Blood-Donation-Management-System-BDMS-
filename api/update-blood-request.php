@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/notification_service.php';
 
 // Only recipients and admins can manage requests
 checkRole(['recipient', 'admin']);
@@ -82,45 +83,14 @@ try {
         'status' => $new_status,
         'id' => $request_id
     ]);
+  
+      // Send notification to the requester
+    $title = "Blood Request #{$request_id} Updated";
+    $msg = "Your blood request has been marked as '{$new_status}'.";
+    $link = "request-status.php?id={$request_id}";
+    add_notification($request['requester_id'], $title, $msg, 'info', $link);
 
-    // Send email notification to requester
-    $to_email = !empty($request['contact_email']) ? $request['contact_email'] : $request['user_email'];
-    $requester_name = $request['user_name'];
-    $blood_group = $request['blood_group'];
-    $quantity = $request['quantity'];
-    $hospital = $request['hospital_name'];
-    $urgency = $request['urgency'];
-    
-    if ($new_status === 'approved') {
-        $subject = "Blood Request Approved - BDMS";
-        $body = "Hello {$requester_name},\n\n"
-              . "Great news! Your blood request (ID: #{$request_id}) has been APPROVED by the administrator.\n\n"
-              . "Details:\n"
-              . "- Blood Group: {$blood_group}\n"
-              . "- Quantity   : {$quantity} bag(s)\n"
-              . "- Hospital   : {$hospital}\n"
-              . "- Urgency    : " . ucfirst($urgency) . "\n\n"
-              . "Our donor compatibility engine is matching your request with eligible donors. We will notify you as soon as slots are filled.\n\n"
-              . "Regards,\n"
-              . "BDMS Support Team";
-        log_simulated_email($to_email, $subject, $body);
-    } elseif ($new_status === 'cancelled') {
-        $subject = "Blood Request Cancelled/Rejected - BDMS";
-        $body = "Hello {$requester_name},\n\n"
-              . "Please note that your blood request (ID: #{$request_id}) for {$quantity} bag(s) of {$blood_group} has been CANCELLED or REJECTED.\n\n"
-              . "Hospital: {$hospital}\n\n"
-              . "If you believe this is an error or if you need to submit a new request, please log in to your Recipient Portal or contact support.\n\n"
-              . "Regards,\n"
-              . "BDMS Support Team";
-        log_simulated_email($to_email, $subject, $body);
-    }
-
-    $message = "Request #{$request_id} has been marked as " . ($new_status === 'cancelled' ? 'rejected/cancelled' : $new_status) . ".";
-    if (!empty($_POST['redirect'])) {
-        set_flash_message('success', $message);
-        header('Location: ' . $_POST['redirect']);
-        exit;
-    }
+    $message = "Request #{$request_id} has been marked as {$new_status}.";
 
     echo json_encode([
         'success' => true,

@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/notification_service.php';
 
 // Only recipients may submit blood requests
 checkRole(['recipient']);
@@ -113,6 +114,16 @@ try {
         $body = "Dear $contact_person,\n\nWe have received your $urgency blood request for $quantity units of $blood_group blood at $hospital_name.\n\nTrack your request status here: http://localhost/Blood-Donation-Management-System-BDMS--main/request-status.php?id=$requestId\n\nThank you,\nBDMS Team";
         log_simulated_email($contact_email, $subject, $body);
     }
+
+    // In-app notifications
+    // 1. Notify the recipient who requested
+    $title = "Blood Request #{$requestId} Submitted";
+    $msg = "Your {$urgency} blood request for {$quantity} units of {$blood_group} blood at {$hospital_name} has been submitted successfully.";
+    $link = "request-status.php?id={$requestId}";
+    add_notification($_SESSION['user_id'], $title, $msg, 'success', $link);
+
+    // 2. Notify all matching active donors in this city
+    notify_matching_donors($requestId, $blood_group, $city);
 
     echo json_encode([
         'success' => true,

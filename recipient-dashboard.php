@@ -744,6 +744,7 @@ $error   = get_flash_message('error');
             </svg>
             New Request
         </a>
+        <?php include_once __DIR__ . '/includes/notification_bell.php'; ?>
         <a href="logout.php" class="nav-logout" id="nav-logout">Log Out</a>
     </div>
 </nav>
