@@ -53,6 +53,15 @@ try {
     $stmt_del = $pdo->prepare("DELETE FROM email_verifications WHERE id = :id");
     $stmt_del->execute(['id' => $verification['id']]);
     
+    // Trigger in-app notification
+    require_once __DIR__ . '/includes/notification_service.php';
+    add_notification(
+        $verification['user_id'],
+        "Email Verified Successfully!",
+        "Your email is now verified. Welcome to BDMS! You have full access to all features.",
+        'success'
+    );
+
     $pdo->commit();
     
     set_flash_message('success', 'Email verified successfully! You can now log in.');

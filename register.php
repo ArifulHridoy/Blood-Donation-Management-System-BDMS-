@@ -163,6 +163,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     log_simulated_email($email, "Verify Your BDMS Account", $body);
                     
+                    // Trigger in-app notification
+                    require_once __DIR__ . '/includes/notification_service.php';
+                    add_notification(
+                        $user_id,
+                        "Welcome to BDMS!",
+                        "Thank you for registering. Please verify your email using the link sent to your inbox to unlock all features.",
+                        'success'
+                    );
+
                     $pdo->commit();
                     
                     set_flash_message('success', 'Registration successful! A verification link has been sent to your email. Please click it to verify your account.');

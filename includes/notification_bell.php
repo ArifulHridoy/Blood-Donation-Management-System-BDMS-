@@ -13,6 +13,9 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
+// Automatically evaluate and trigger dynamic reminders
+check_and_trigger_reminders($userId);
+
 // Get initial unread count and latest notifications
 $unreadNotifications = get_notifications($userId, 10, true);
 $unreadCount = count($unreadNotifications);

@@ -131,3 +131,91 @@ function notify_matching_donors($requestId, $bloodGroup, $city) {
         return 0;
     }
 }
+
+/**
+ * Trigger automatic daily reminders for a user (eligibility and upcoming bookings)
+ */
+function check_and_trigger_reminders($userId) {
+    global $pdo;
+    try {
+        // 1. Check eligibility
+        $stmt = $pdo->prepare("SELECT role, last_donation_date FROM users WHERE id = :id LIMIT 1");
+        $stmt->execute(['id' => $userId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($user && $user['role'] === 'donor') {
+            $last_donation = $user['last_donation_date'] ?? null;
+            $is_eligible = false;
+            if ($last_donation) {
+                $next_eligible_date = date('Y-m-d', strtotime($last_donation . ' + 56 days'));
+                $today = date('Y-m-d');
+                $is_eligible = ($today >= $next_eligible_date);
+            } else {
+                $is_eligible = true;
+            }
+            
+            if ($is_eligible) {
+                // Check if we already sent a reminder in the last 7 days to avoid spam
+                $stmt_check = $pdo->prepare("
+                    SELECT COUNT(*) FROM notifications 
+                    WHERE user_id = :user_id 
+                      AND title = 'Blood Donation Reminder' 
+                      AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)
+                ");
+                $stmt_check->execute(['user_id' => $userId]);
+                if ($stmt_check->fetchColumn() == 0) {
+                    add_notification(
+                        $userId,
+                        "Blood Donation Reminder",
+                        "It has been more than 56 days since your last donation. You are eligible to save lives again! Click to schedule.",
+                        'info',
+                        'donor-schedule.php'
+                    );
+                }
+            }
+        }
+        
+        // 2. Check upcoming bookings (today or tomorrow)
+        $stmt_booking = $pdo->prepare("
+            SELECT b.id, s.slot_date, s.start_time 
+            FROM donation_bookings b 
+            JOIN donation_slots s ON b.slot_id = s.id 
+            WHERE b.donor_id = :user_id 
+              AND b.status = 'scheduled' 
+              AND s.slot_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+        ");
+        $stmt_booking->execute(['user_id' => $userId]);
+        $bookings = $stmt_booking->fetchAll(PDO::FETCH_ASSOC);
+        
+        foreach ($bookings as $b) {
+            $bookingDate = date('M d, Y', strtotime($b['slot_date']));
+            $bookingTime = date('h:i A', strtotime($b['start_time']));
+            // Check if we sent a reminder for this booking in the last 24 hours
+            $title = "Upcoming Donation Reminder";
+            $stmt_check_book = $pdo->prepare("
+                SELECT COUNT(*) FROM notifications 
+                WHERE user_id = :user_id 
+                  AND title = :title 
+                  AND message LIKE :msg_like
+                  AND created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)
+            ");
+            $stmt_check_book->execute([
+                'user_id' => $userId,
+                'title' => $title,
+                'msg_like' => "%{$bookingDate}%"
+            ]);
+            if ($stmt_check_book->fetchColumn() == 0) {
+                add_notification(
+                    $userId,
+                    $title,
+                    "Reminder: You have a scheduled blood donation appointment on {$bookingDate} at {$bookingTime}. Please eat well and stay hydrated!",
+                    'warning',
+                    'donor-dashboard.php'
+                );
+            }
+        }
+    } catch (PDOException $e) {
+        error_log("Failed to run reminders check: " . $e->getMessage());
+    }
+}
+
