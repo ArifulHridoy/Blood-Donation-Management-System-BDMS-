@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `last_donation_date` DATE NULL,
   `is_verified` TINYINT(1) DEFAULT 0,
   `status` ENUM('active', 'suspended') DEFAULT 'active',
+  `notify_email` TINYINT(1) DEFAULT 1,
+  `notify_sms` TINYINT(1) DEFAULT 0,
+  `notify_blood_requests` TINYINT(1) DEFAULT 1,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -124,3 +127,16 @@ VALUES
 ('2026-07-16', '14:00:00', '15:00:00', 2, 0, 'available'),
 ('2026-07-16', '15:00:00', '16:00:00', 2, 0, 'available'),
 ('2026-07-20', '09:00:00', '11:00:00', 10, 0, 'available');
+
+-- 8. NOTIFICATIONS TABLE
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `message` TEXT NOT NULL,
+  `type` ENUM('info', 'success', 'warning', 'error', 'blood_request') DEFAULT 'info',
+  `link` VARCHAR(255) NULL,
+  `is_read` TINYINT(1) DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

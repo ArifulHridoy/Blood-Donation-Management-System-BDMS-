@@ -176,6 +176,7 @@ checkRole(['donor']);
         <a href="donor-dashboard.php">Dashboard</a>
         <a href="donor-schedule.php" class="active">Schedule Donation</a>
         <a href="donor-edit-profile.php">Edit Profile</a>
+        <?php include_once __DIR__ . '/includes/notification_bell.php'; ?>
         <a href="logout.php" class="btn-logout">Logout</a>
     </div>
 </nav>

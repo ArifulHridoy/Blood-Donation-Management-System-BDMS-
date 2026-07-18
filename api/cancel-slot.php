@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/notification_service.php';
 
 header('Content-Type: application/json');
 
@@ -64,6 +65,21 @@ try {
     }
 
     $pdo->commit();
+
+    // Trigger in-app notifications
+    // 1. Notify the donor
+    $title = "Donation Appointment Cancelled";
+    $msg = "Your donation appointment slot on " . date('M d, Y', strtotime($slot['slot_date'])) . " has been cancelled.";
+    add_notification($_SESSION['user_id'], $title, $msg, 'warning', 'donor-dashboard.php');
+
+    // 2. Notify all active admins
+    $adminStmt = $pdo->query("SELECT id FROM users WHERE role = 'admin' AND status = 'active'");
+    $admins = $adminStmt->fetchAll(PDO::FETCH_COLUMN);
+    foreach ($admins as $adminId) {
+        $donorName = $_SESSION['user_name'] ?? 'A donor';
+        add_notification($adminId, "Slot Cancellation Alert", "{$donorName} cancelled their booked slot for " . date('M d, Y', strtotime($slot['slot_date'])) . ".", 'warning', 'admin-dashboard.php');
+    }
+
     echo json_encode(['success' => true, 'message' => 'Your appointment has been successfully cancelled.']);
 
 } catch (Exception $e) {

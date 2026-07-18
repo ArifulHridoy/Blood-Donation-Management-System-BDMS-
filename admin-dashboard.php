@@ -321,8 +321,9 @@ try {
             <h1>Admin Panel</h1>
             <div class="admin-meta">Logged in as: <strong><?php echo h($admin['full_name']); ?></strong></div>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 15px; align-items: center;">
             <a href="donor-search.php" class="logout-link" style="background: var(--crimson);">Search Donors</a>
+            <?php include_once __DIR__ . '/includes/notification_bell.php'; ?>
             <a href="logout.php" class="logout-link">Log Out</a>
         </div>
     </div>

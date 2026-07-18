@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/notification_service.php';
 
 // Only recipients and admins can manage requests
 checkRole(['recipient', 'admin']);
@@ -83,6 +84,13 @@ try {
         'id' => $request_id
     ]);
 
+<<<<<<< HEAD
+    // Send notification to the requester
+    $title = "Blood Request #{$request_id} Updated";
+    $msg = "Your blood request has been marked as '{$new_status}'.";
+    $link = "request-status.php?id={$request_id}";
+    add_notification($request['requester_id'], $title, $msg, 'info', $link);
+=======
     // Send email notification to requester
     $to_email = !empty($request['contact_email']) ? $request['contact_email'] : $request['user_email'];
     $requester_name = $request['user_name'];
@@ -121,6 +129,7 @@ try {
         header('Location: ' . $_POST['redirect']);
         exit;
     }
+>>>>>>> 344f52608687307f6b444a7820e53d3a521d8c37
 
     echo json_encode([
         'success' => true,
