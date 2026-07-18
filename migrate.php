@@ -7,6 +7,16 @@ try {
     $pdo->exec("DROP TABLE IF EXISTS `donation_slots`");
     $pdo->exec("DROP TABLE IF EXISTS `notifications`");
     
+    // Add notification preference columns to users table (ignoring error if they already exist)
+    try {
+        $pdo->exec("ALTER TABLE `users` 
+            ADD COLUMN `notify_email` TINYINT(1) DEFAULT 1,
+            ADD COLUMN `notify_sms` TINYINT(1) DEFAULT 0,
+            ADD COLUMN `notify_blood_requests` TINYINT(1) DEFAULT 1;");
+    } catch (PDOException $e) {
+        // Columns might already exist
+    }
+    
     $pdo->exec("CREATE TABLE IF NOT EXISTS `donation_slots` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `slot_date` DATE NOT NULL,

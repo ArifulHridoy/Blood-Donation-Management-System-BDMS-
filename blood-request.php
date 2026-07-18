@@ -38,20 +38,20 @@ $error   = get_flash_message('error');
     <style>
         /* ── Design Tokens ── */
         :root {
-            --ink: #181A1B;
-            --crimson: #A8201A;
-            --crimson-deep: #7A1712;
-            --paper: #F7F4EF;
+            --ink: #1E293B;            /* Slate 800 */
+            --crimson: #D32F2F;        /* Medical Red */
+            --crimson-deep: #B71C1C;   /* Dark Red */
+            --paper: #F8FAFC;          /* Slate 50 */
             --card: #FFFFFF;
-            --rose: #F3DEDB;
-            --teal: #2E7D6B;
-            --teal-tint: #DCEEE8;
-            --amber: #C97A1E;
-            --amber-tint: #F6E6CF;
-            --line: #E6E0D6;
-            --muted: #7A756C;
-            --radius: 14px;
-            --shadow: 0 1px 2px rgba(24,26,27,0.04), 0 8px 24px -12px rgba(24,26,27,0.12);
+            --rose: #FEE2E2;           /* Red 100 */
+            --teal: #2E7D32;           /* Success Green */
+            --teal-tint: #E8F5E9;      /* Green 50 */
+            --amber: #F57C00;          /* Warning Orange */
+            --amber-tint: #FFF3E0;     /* Warning 50 */
+            --line: #E2E8F0;           /* Slate 200 */
+            --muted: #64748B;          /* Slate 500 */
+            --radius: 12px;
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px -12px rgba(0, 0, 0, 0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }

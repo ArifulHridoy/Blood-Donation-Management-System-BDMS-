@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `last_donation_date` DATE NULL,
   `is_verified` TINYINT(1) DEFAULT 0,
   `status` ENUM('active', 'suspended') DEFAULT 'active',
+  `notify_email` TINYINT(1) DEFAULT 1,
+  `notify_sms` TINYINT(1) DEFAULT 0,
+  `notify_blood_requests` TINYINT(1) DEFAULT 1,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
